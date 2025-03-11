@@ -1,54 +1,55 @@
 <?php require_once "./part/header.php" ?>
 <?php require_once "./fn/functions.php" ?>
+<?php require_once "./fn/functions.php" ?>
 <?php require_once "./fn/db.php" ?> 
 
 
 <?php
 
-if (!isset($_GET['word']) or empty($_GET['word']))
+$perpage = 4;
+$page = isset($_GET['page']) ? $_GET['page'] : 1;
+$offset = ($page - 1) * $perpage;
+
+if (!isset($_GET['cat']) or empty($_GET['cat']))
 {
     redirectTo('index.php');
 }
+$category = $_GET['cat'];
 
-// Number of pages and settings
-$page = isset($_GET['page']) ? $_GET['page'] : 1;
-$perpage = 4;
-$offset = ($page - 1) * $perpage;
+// دریافت تمام پست‌های این دسته‌بندی
+$results = getPostsByCategory($category);
 
-$totalPages = ceil(getCountAllPosts() / $perpage);
-if ($page > $totalPages)
-    // nemishe bezarim 404
-    redirectto('index.php');
-    
-// $posts = getPosts($perpage , $offset);
-
-$results = [];
-if (isset($_GET['word'])) {
-    $word = trim($_GET['word']);
-    $results = searchPosts($word , 4, $offset);
+// اطمینان از اینکه مقدار یک آرایه است
+if (!is_array($results)) {
+    $results = [];
 }
 
-if (isset($_GET['cat'])) {
-    $cat = trim($_GET['cat']);
-    $results = getPostsByCategory($cat);
-}
+// تعداد کل پست‌های این دسته‌بندی
+$total_results = count($results);
 
-// گرفتن تعداد کل نتایج جستجو
-$total_results = getCountAllPosts($word);
+// محاسبه تعداد کل صفحات
 $total_pages = ceil($total_results / $perpage);
 
-// اگر صفحه‌ای درخواست شود که از تعداد کل صفحات بیشتر باشد، کاربر به صفحه اصلی هدایت شود
+// اگر صفحه‌ای درخواست شود که از تعداد کل صفحات بیشتر باشد، ریدایرکت شود
 if ($page > $total_pages && $total_pages > 0) {
     redirectTo('index.php');
 }
 
-// دریافت نتایج جستجو با محدودیت صفحه‌بندی
-$posts = searchPosts($word, $perpage, $offset);
+// دریافت پست‌های صفحه جاری با محدودیت صفحه‌بندی
+$posts = array_slice($results, $offset, $perpage);
+
+// if (empty($_GET)) {
+//     echo "Query String وجود ندارد.";
+// } else {
+//     print_r($_GET);
+// }
 
 ?>
 
+<h3 class="pt-10"> this category is  <?= $category ?></h3>
+
 <!-- cart -->
-<section class="d-flex flex-wrap mt-3 justify-content-center">
+<section class="d-flex flex-wrap mt-3 justify-content-center">  
     <?php foreach($results as $post): ?>
     <div class="card mx-2 mb-3" style="width: 19rem;">
         <img src="<?= asset($post['upload_images']) ?>" class="card-img-top" alt="...">
@@ -62,24 +63,23 @@ $posts = searchPosts($word, $perpage, $offset);
 </section>
 
 <!-- pagination -->
-
 <section class="d-flex flex-wrap mt-3 justify-content-center">
     <nav aria-label="Page navigation example">
         <ul class="pagination">
             <li class="page-item <?= $page <= 1 ? 'disabled' : '' ?>">
-                <a class="page-link" href="?word=<?= urlencode($word) ?>&page=<?= max(1, $page - 1) ?>" aria-label="Previous">
+                <a class="page-link" href="?cat=<?= urlencode($cat) ?>&page=<?= max(1, $page - 1) ?>" aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
                 </a>
             </li>
 
             <?php for ($i = 1; $i <= $total_pages; $i++): ?>
                 <li class="page-item <?= $i == $page ? 'active' : '' ?>">
-                    <a class="page-link" href="?word=<?= urlencode($word) ?>&page=<?= $i ?>"><?= $i ?></a>
+                    <a class="page-link" href="?cat=<?= urlencode($cat) ?>&page=<?= $i ?>"><?= $i ?></a>
                 </li>
             <?php endfor; ?>
 
             <li class="page-item <?= $page >= $total_pages ? 'disabled' : '' ?>">
-                <a class="page-link" href="?word=<?= urlencode($word) ?>&page=<?= min($total_pages, $page + 1) ?>" aria-label="Next">
+                <a class="page-link" href="?cat=<?= urlencode($cat) ?>&page=<?= min($total_pages, $page + 1) ?>" aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
                 </a>
             </li>

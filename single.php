@@ -24,6 +24,11 @@ if (!$post) {
                     <time class="pe-5 text-secondary"><?= $post['created_at'] ?></time>
                     <span class="ps-5 text-primary">Ali mohammadi</span>
                 </div>
+                <!-- ino bebin  -->
+                <div>
+                    <time><?= $post['created_at'] ?></time>
+                    <span><?= $post['autour'] ?></span>
+                </div>
                 <p class="mt-5"><?= $post['content'] ?></p>
             </div>
         </div>

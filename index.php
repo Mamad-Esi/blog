@@ -4,7 +4,6 @@
 <?php require_once "./fn/db.php" ?>
 
 <?php
-
 // Number of pages and settings
 $page = isset($_GET['page']) ? $_GET['page'] : 1;
 $perpage = 4;
@@ -16,8 +15,6 @@ if ($page > $totalPages)
     redirectto('index.php');
     
 $posts = getPosts($perpage , $offset);
-
-
 
 ?>
 
