@@ -1,6 +1,5 @@
 <?php require_once "./part/header.php" ?>
 <?php require_once "./fn/functions.php" ?>
-<?php require_once "./fn/functions.php" ?>
 <?php require_once "./fn/db.php" ?> 
 
 

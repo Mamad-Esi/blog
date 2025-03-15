@@ -31,6 +31,7 @@ function url (string $file , array $params = []): string
     $queryString = '?';
     foreach ($params as $key => $value)
     {
+        $value = trim($value);
         $queryString = $queryString . "$key=$value&";
     }
     if (count($params))

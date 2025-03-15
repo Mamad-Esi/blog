@@ -1,47 +1,44 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Admin panel</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-  </head>
-  <body>
+<?php require_once './part/header_panel.php' ?>
+<?php require_once "./fn/functions.php" ?>
+<?php require_once "./fn/db.php" ?>
 
-    <main class="container">
-        <nav class="navbar navbar-expand-lg bg-body-tertiary">
-            <div class="container-fluid">
-                <a class="navbar-brand fw-bold" href="#">Admin panel</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#">All Posts</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">All User</a>
-                    </li>
-                </ul>
-                <form class="d-flex" role="search">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success" type="submit">Search</button>
-                </form>
-                </div>
+<?php
+
+    session_start();
+
+    if (!isset($_SESSION['auth'])) {
+        header("Location: login.php");
+        exit();
+    }
+
+    
+    // Number of pages and settings
+    $page = isset($_GET['page']) ? $_GET['page'] : 1;
+    $perpage = 7;
+    $offset = ($page - 1) * $perpage;
+
+    $totalPages = ceil(getCountAllPosts() / $perpage);
+    if ($page > $totalPages)
+        // nemishe bezarim 404
+        redirectto('panel.php');
+        
+    $posts = getPosts($perpage , $offset);
+
+
+?>
+    <!-- hero -->
+    <section class="mt-3">
+        <div class="p-5 mb-4 bg-light rounded-3">
+            <div class="container-fluid py-5">
+                <h1 class="display-5 fw-bold">AllPosts</h1>
+                <p class="col-md-8 fs-4">Using a series of utilities, you can create this jumbotron.</p>
+                <a class="btn btn-primary btn-lg" href="<?= url('index.php') ?>">See website</a>
             </div>
-        </nav>
+        </div>
+    </section>
 
-        <section class="mt-3">
-            <div class="p-5 mb-4 bg-light rounded-3">
-                <div class="container-fluid py-5">
-                    <h1 class="display-5 fw-bold">AllPosts</h1>
-                    <p class="col-md-8 fs-4">Using a series of utilities, you can create this jumbotron.</p>
-                    <a class="btn btn-primary btn-lg" href="#">See website</a>
-                </div>
-            </div>
-        </section>
-
+    <!-- cart -->
+    <?php if (count($posts)): ?>
         <section class="mt-3">
             <table class="table">
             <thead>
@@ -50,72 +47,54 @@
                     <th scope="col">Title</th>
                     <th scope="col">Date</th>
                     <th scope="col">Status</th>
-                    <th scope="col">Author</th>
-                    <th scope="col">Date</th>
+                    <!-- <th scope="col">Author</th> -->
+                    <th scope="col">action</th>
                 </tr>
             </thead>
             <tbody>
+            <?php foreach ($posts as $post): ?>
                 <tr>
-                    <td scope="col">ID</td>
-                    <td scope="col">Title</td>
-                    <td scope="col">Date</td>
-                    <td scope="col">Status</td>
-                    <td scope="col">Author</td>
-                    <td scope="col">Date</td>
+                    <td><?php echo htmlspecialchars($post['id']); ?></td>
+                    <td><?php echo htmlspecialchars($post['title']); ?></td>
+                    <td><?php echo htmlspecialchars($post['created_at']); ?></td>
+                    <td><?php echo htmlspecialchars($post['status']) ? 'Active' : 'inactive'  ?></td>
+                    <td>
+                        <a href="#" class="mx-2 text-danger">delete</a>
+                        <a href="#" class="mx-2">edit</a>
+                    </td>
                 </tr>
-                <tr>
-                    <td scope="col">ID</td>
-                    <td scope="col">Title</td>
-                    <td scope="col">Date</td>
-                    <td scope="col">Status</td>
-                    <td scope="col">Author</td>
-                    <td scope="col">Date</td>
-                </tr>
-                <tr>
-                    <td scope="col">ID</td>
-                    <td scope="col">Title</td>
-                    <td scope="col">Date</td>
-                    <td scope="col">Status</td>
-                    <td scope="col">Author</td>
-                    <td scope="col">Date</td>
-                </tr>
-                <tr>
-                    <td scope="col">ID</td>
-                    <td scope="col">Title</td>
-                    <td scope="col">Date</td>
-                    <td scope="col">Status</td>
-                    <td scope="col">Author</td>
-                    <td scope="col">Date</td>
-                </tr>
-                <tr>
-                    <td scope="col">ID</td>
-                    <td scope="col">Title</td>
-                    <td scope="col">Date</td>
-                    <td scope="col">Status</td>
-                    <td scope="col">Author</td>
-                    <td scope="col">Date</td>
-                </tr>
-                <tr>
-                    <td scope="col">ID</td>
-                    <td scope="col">Title</td>
-                    <td scope="col">Date</td>
-                    <td scope="col">Status</td>
-                    <td scope="col">Author</td>
-                    <td scope="col">Date</td>
-                </tr>
-                <tr>
-                    <td scope="col">ID</td>
-                    <td scope="col">Title</td>
-                    <td scope="col">Date</td>
-                    <td scope="col">Status</td>
-                    <td scope="col">Author</td>
-                    <td scope="col">Date</td>
-                </tr>
+            <?php endforeach; ?>
             </tbody>
             </table>
         </section>
-    </main>
-    
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-  </body>
-</html>
+    <?php endif; ?>
+
+    <!-- pagination -->
+    <section class="d-flex flex-wrap mt-3 justify-content-center">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                <!-- لینک صفحه قبلی -->
+                <li class="page-item <?= $page <= 1 ? 'disabled' : '' ?>">
+                    <a class="page-link" href="?page=<?= $page - 1 ?>" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+
+                <!-- لینک‌های صفحات -->
+                <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                    <li class="page-item <?= $i == $page ? 'active' : '' ?>">
+                        <a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a>
+                    </li>
+                <?php endfor; ?>
+
+                <!-- لینک صفحه بعدی -->
+                <li class="page-item <?= $page >= $totalPages ? 'disabled' : '' ?>">
+                    <a class="page-link" href="?page=<?= $page + 1 ?>" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </section>
+
+    <?php require_once './part/footer.php' ?>
