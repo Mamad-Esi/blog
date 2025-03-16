@@ -62,29 +62,31 @@ $posts = array_slice($results, $offset, $perpage);
 </section>
 
 <!-- pagination -->
-<section class="d-flex flex-wrap mt-3 justify-content-center">
-    <nav aria-label="Page navigation example">
-        <ul class="pagination">
-            <li class="page-item <?= $page <= 1 ? 'disabled' : '' ?>">
-                <a class="page-link" href="?cat=<?= urlencode($cat) ?>&page=<?= max(1, $page - 1) ?>" aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                </a>
-            </li>
-
-            <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-                <li class="page-item <?= $i == $page ? 'active' : '' ?>">
-                    <a class="page-link" href="?cat=<?= urlencode($cat) ?>&page=<?= $i ?>"><?= $i ?></a>
+<?php if ($total_results > $perpage): ?> 
+    <section class="d-flex flex-wrap mt-3 justify-content-center">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                <li class="page-item <?= $page <= 1 ? 'disabled' : '' ?>">
+                    <a class="page-link" href="?cat=<?= urlencode($cat) ?>&page=<?= max(1, $page - 1) ?>" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
                 </li>
-            <?php endfor; ?>
 
-            <li class="page-item <?= $page >= $total_pages ? 'disabled' : '' ?>">
-                <a class="page-link" href="?cat=<?= urlencode($cat) ?>&page=<?= min($total_pages, $page + 1) ?>" aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
-</section>
+                <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                    <li class="page-item <?= $i == $page ? 'active' : '' ?>">
+                        <a class="page-link" href="?cat=<?= urlencode($cat) ?>&page=<?= $i ?>"><?= $i ?></a>
+                    </li>
+                <?php endfor; ?>
+
+                <li class="page-item <?= $page >= $total_pages ? 'disabled' : '' ?>">
+                    <a class="page-link" href="?cat=<?= urlencode($cat) ?>&page=<?= min($total_pages, $page + 1) ?>" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </section>
+<?php endif; ?>
 
 
 <?php require_once "./part/footer.php" ?>
